@@ -1,0 +1,292 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #0a090a; /* warna latar sesuai gambar */
+}
+
+.home-section {
+  background-color: #fce4ec;
+  min-height: 100vh;
+  display: flex;
+}
+
+
+
+
+
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #f915a2;
+}
+.home-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+.left {
+  flex: 1;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+.product-video {
+  width: 100%;
+  height: 70vh;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.btn-masuk {
+  padding: 10px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  width: fit-content;
+}
+
+
+
+
+
+
+
+.bg-pink {
+  background-color: #ff4cc2 !important;
+}
+
+.btn-pink {
+  background-color: #ff4cc2;
+  color: #ff4cc2;
+}
+
+.btn-pink:hover {
+  background-color: #e843b0;
+  color: #e843b0;
+}
+
+
+.left {
+  flex-direction: column;
+  text-align: center;
+  gap: 30px;
+  margin-top: 30px; /* DITAMBAHKAN untuk menggeser konten ke atas */
+}
+
+@media (min-width: 768px) {
+  .left {
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 100px; /* DITAMBAHKAN agar tetap naik saat tampilan besar */
+  }
+}
+
+.left h5 {
+  position: relative;
+  top: -80px;
+}
+
+
+
+
+
+
+.footer-section {
+  background-color: #ef0582;
+  color: #fff;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+.footer-section h5 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  color: #fff !important; /* Pastikan warna teks ul tetap putih */
+}
+
+.footer-section li {
+  margin-bottom: 6px;
+  color: #fff !important; /* Pastikan warna teks li tetap putih */
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  text-align: center;
+  color: #fff;
+}
+
+.social-icons a {
+  color: #fff;
+  font-size: 20px;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  color: #ff4081;
+}
+
+@media (max-width: 768px) {
+  .footer-section .row {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .footer-section .col {
+    margin-bottom: 20px;
+  }
+
+  .social-icons a {
+    font-size: 24px;
+    margin: 0 15px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+.product-carousel {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 0;
+}
+
+.product-carousel .row {
+  display: inline-flex;
+  flex-wrap: nowrap;
+}
+
+.product-carousel .col-md-4 {
+  display: inline-block;
+  width: 33.3333%;
+}
+
+
+
+
+.product-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.product-carousel .card {
+  flex: 0 0 auto;
+  width: 220px;
+}
+
+.product-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+.product-carousel::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  height: 1.5em;
+}
+
+.marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+
+#promoCarousel img {
+  max-height: 300px;
+  object-fit: cover;
+  width: 100%;
+}
+
+
+
+
+/*Info bahan bahan*/
+/* style.css */
+body {
+  background-color: #fff0f5;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.section-title {
+  font-size: 2.4rem;
+  font-weight: bold;
+  color: #d63384;
+}
+
+.info-box {
+  max-width: 850px;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  padding: 40px;
+}
+
+h5 {
+  color: #b30059;
+  margin-top: 30px;
+}
+
+/* About Us Section */
+#about {
+  background-color: #f8f9fa;
+}
+
+#about .container {
+  display: flex;
+  justify-content: space-between;
+}
+
+#about img {
+  max-height: 400px;  /* Sesuaikan sesuai ukuran gambar yang diinginkan */
+}
+
+#about .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#about h2 {
+  font-size: 2.5rem;
+  color: #d63384;
+}
+
+#about p {
+  font-size: 1.25rem;
+  color: #6c757d;
+}
