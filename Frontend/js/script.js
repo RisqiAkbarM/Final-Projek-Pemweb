@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://vercel.com/matsukas-projects/final-projek-pemweb';
 
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById('product-list-container')) {
