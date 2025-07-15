@@ -1,0 +1,317 @@
+/* === RESET & GLOBAL === */
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color: #444;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* WARNA LATAR DITERAPKAN KE SELURUH HALAMAN DI SINI */
+    background: linear-gradient(135deg, #ffe6f0, #fff5fb);
+    /* TAMBAHKAN 3 BARIS INI UNTUK STICKY FOOTER */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* === NAVBAR === */
+.navbar-brand {
+    font-weight: 700 !important;
+}
+
+/* === HALAMAN UTAMA (INDEX.HTML) === */
+.home-section {
+    min-height: 90vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    /* WARNA LATAR DIHAPUS DARI SINI KARENA SUDAH PINDAH KE BODY */
+}
+
+.home-section .left {
+    flex: 1 1 400px;
+    padding: 1rem;
+}
+
+.home-section .left h5 {
+    color: #c2185b;
+    font-weight: 600;
+}
+
+.home-section .left h1 {
+    font-weight: 700;
+    font-size: 3rem;
+}
+
+.home-section .right {
+    flex: 1 1 400px;
+    padding: 1rem;
+}
+
+.product-video,
+.home-section .right img {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* === PRODUK LIST === */
+.product-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem 1rem;
+}
+
+.card {
+    flex: 0 1 300px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.btn-outline-danger {
+    color: #d63384;
+    border-color: #d63384;
+    font-weight: 500;
+    border-radius: 50px;
+    padding: 8px 24px;
+}
+
+.btn-outline-danger:hover {
+    background-color: #d63384;
+    color: white;
+}
+
+/* === UMUM === */
+.page-container {
+    max-width: 960px;
+    margin: 4rem auto;
+    padding: 0 1rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    font-weight: 700;
+    color: #c2185b;
+    font-size: 2.8rem;
+}
+
+.info-box {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem;
+}
+
+/* KODE BARU DITAMBAHKAN UNTUK IKON KERANJANG KOSONG */
+.text-light-pink {
+    color: #fce4ec;
+}
+
+/* === ABOUT PAGE === */
+.about-section-page .img-fluid {
+    border-radius: 12px;
+}
+.about-section-page h2 {
+    color: #c2185b;
+    font-weight: 700;
+}
+
+/* === SELLERS / MAP === */
+.map-container {
+    position: relative;
+    padding-bottom: 75%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+.map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* === CONTACT FORM === */
+.contact-form .form-label {
+    font-weight: 600;
+}
+.contact-form .form-control {
+    border-radius: 8px;
+    padding: 12px;
+}
+.contact-form .btn {
+    background-color: #c2185b;
+    border-color: #c2185b;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+.contact-form .btn:hover {
+    background-color: #ad1457;
+    border-color: #ad1457;
+}
+
+/* === FOOTER (SELURUH BAGIAN INI TELAH DIDESAIN ULANG) === */
+.footer-section {
+    background-color: #343a40; 
+    color: #f8f9fa;
+    padding: 50px 0;
+    font-size: 14px;
+}
+.footer-section h5 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+.footer-section li {
+    margin-bottom: 10px;
+}
+.footer-section a {
+    color: #ced4da;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.footer-section a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+.footer-bottom {
+    padding-top: 30px;
+    margin-top: 30px;
+    border-top: 1px solid #495057;
+    text-align: center;
+    color: #adb5bd;
+}
+.social-icons a {
+    font-size: 20px;
+    margin: 0 12px;
+    color: #ced4da;
+    transition: color 0.3s ease;
+}
+.social-icons a:hover {
+    color: #ffffff;
+}
+
+/* === Banner Produk === */
+.top-banner-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* === LOGIN PAGE === */
+.login-page {
+    /* Background ini sekarang ada di body, bisa dihapus jika tidak ingin spesifik untuk login */
+    background: linear-gradient(135deg, #ffe6f0, #fff5fb);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    padding: 1rem;
+}
+
+.login-box {
+    background-color: #fff;
+    padding: 35px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+}
+
+.login-box h2 {
+    font-weight: 600;
+    color: #d63384;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.btn-pink {
+    background-color: #d63384;
+    color: #fff;
+    border: none;
+}
+
+.btn-pink:hover {
+    background-color: #bd2c73;
+}
+
+.form-control:focus {
+    border-color: #d63384;
+    box-shadow: 0 0 0 0.2rem rgba(214, 51, 132, 0.25);
+}
+
+a {
+    color: #d63384;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .home-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .home-section .left,
+    .home-section .right {
+        padding: 0.5rem;
+    }
+
+    .home-section .left h1 {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        padding: 25px 20px;
+    }
+}

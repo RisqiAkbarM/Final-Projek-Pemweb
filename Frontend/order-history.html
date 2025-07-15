@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pesanan - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* Style tambahan untuk halaman profil (digunakan kembali) */
+        .profile-nav .nav-link {
+            color: #6c757d;
+            border-left: 3px solid transparent;
+            border-radius: 0;
+        }
+        .profile-nav .nav-link.active {
+            color: #d63384;
+            font-weight: bold;
+            background-color: #fce4ec;
+            border-left-color: #d63384;
+        }
+        .profile-nav .nav-link:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="container my-5">
+        <div class="page-header">
+            <h1>Akun Saya</h1>
+        </div>
+
+        <div class="row">
+            <!-- Kolom Navigasi Samping -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-2">
+                        <nav class="nav flex-column profile-nav">
+                            <a class="nav-link" href="profile.html"><i class="fas fa-user-edit me-2"></i>Edit Profil</a>
+                            <a class="nav-link active" href="order-history.html"><i class="fas fa-receipt me-2"></i>Riwayat Pesanan</a>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Konten Utama -->
+            <div class="col-md-8 col-lg-9 mt-4 mt-md-0">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Riwayat Pesanan Anda</h5>
+                    </div>
+                    <div class="card-body p-4" id="order-list-container">
+                        <!-- Daftar pesanan akan dimuat di sini oleh JavaScript -->
+                        <p class="text-center">Memuat riwayat pesanan...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
+            if (!userInfo) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const orderContainer = document.getElementById('order-list-container');
+            
+            try {
+                const response = await fetch('/api/orders/myorders', {
+                    headers: {
+                        'Authorization': `Bearer ${userInfo.token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data pesanan.');
+                }
+
+                const orders = await response.json();
+
+                if (orders.length === 0) {
+                    orderContainer.innerHTML = '<p class="text-center text-muted">Anda belum memiliki riwayat pesanan.</p>';
+                    return;
+                }
+
+                let ordersHtml = '<div class="list-group">';
+                orders.forEach(order => {
+                    const orderDate = new Date(order.createdAt).toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                    });
+                    
+                    // PERUBAHAN DI SINI: Tag <a> sekarang memiliki href yang benar
+                    ordersHtml += `
+                        <a href="order-detail.html?id=${order._id}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Pesanan #${order._id.substring(0, 8)}</h6>
+                                <small>${orderDate}</small>
+                            </div>
+                            <p class="mb-1">Total: <strong>Rp ${order.totalPrice.toLocaleString('id-ID')}</strong></p>
+                            <small>Status: <span class="badge bg-${order.isPaid ? 'success' : 'warning'}">${order.isPaid ? 'Dibayar' : 'Menunggu Pembayaran'}</span></small>
+                        </a>
+                    `;
+                });
+                ordersHtml += '</div>';
+                
+                orderContainer.innerHTML = ordersHtml;
+
+            } catch (error) {
+                orderContainer.innerHTML = `<p class="text-center text-danger">${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

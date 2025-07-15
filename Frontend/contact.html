@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hubungi Kami - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+    <!-- Header akan dimuat di sini oleh main.js -->
+    <div id="header-placeholder"></div>
+
+    <main class="page-container">
+        <div class="page-header">
+            <h1>Let's Get in Touch</h1>
+            <p class="text-muted">Kami siap membantu kebutuhan kecantikanmu.</p>
+        </div>
+        <div class="info-box">
+            <div class="row g-5">
+                <div class="col-md-5">
+                    <h5 class="fw-bold">Hubungi Kami</h5>
+                    <p>
+                        <strong>Alamat:</strong><br>G7VP+M34 Sokaraja Tengah, Kabupaten Banyumas, Jawa Tengah
+                    </p>
+                    <p>
+                        <strong>Telepon:</strong><br>+62 856-0294-1186
+                    </p>
+                    <p>
+                        <strong>Email:</strong><br>support@wienkglam.co.id
+                    </p>
+                </div>
+                <div class="col-md-7">
+                    <!-- Beri ID pada form dan tambahkan div untuk notifikasi -->
+                    <form id="contactForm" class="contact-form">
+                        <div id="form-notification" class="mb-3"></div> <!-- Div untuk menampilkan pesan sukses/error -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nama kamu</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email kamu</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Pesan kamu</label>
+                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" id="submitButton" class="btn btn-pink w-100">KIRIM PESAN</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer akan dimuat di sini oleh main.js -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Pastikan main.js dipanggil untuk memuat header/footer -->
+    <script src="js/main.js"></script> 
+
+    <!-- === SCRIPT UNTUK MENGIRIM FORM === -->
+    <script>
+        // Ambil elemen-elemen yang dibutuhkan dari halaman
+        const contactForm = document.getElementById('contactForm');
+        const submitButton = document.getElementById('submitButton');
+        const notificationDiv = document.getElementById('form-notification');
+
+        // Tambahkan event listener saat form di-submit
+        contactForm.addEventListener('submit', async (event) => {
+            // 1. Mencegah form dari perilaku default (reload halaman)
+            event.preventDefault();
+
+            // Ubah teks tombol dan nonaktifkan untuk mencegah klik ganda
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Mengirim...';
+            notificationDiv.innerHTML = ''; // Bersihkan notifikasi lama
+
+            // 2. Ambil data dari setiap input
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            // 3. Kirim data ke backend menggunakan Fetch API
+            try {
+                const response = await fetch('http://localhost:5000/api/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, message }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Jika sukses (status 2xx)
+                    notificationDiv.innerHTML = `<div class="alert alert-success" role="alert">${result.message}</div>`;
+                    contactForm.reset(); // Kosongkan form
+                } else {
+                    // Jika gagal dari server (status 4xx atau 5xx)
+                    throw new Error(result.message || 'Terjadi kesalahan saat mengirim data.');
+                }
+
+            } catch (error) {
+                // Jika ada error jaringan atau error dari server
+                notificationDiv.innerHTML = `<div class="alert alert-danger" role="alert">${error.message}</div>`;
+            } finally {
+                // 4. Apapun hasilnya, aktifkan kembali tombolnya
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'KIRIM PESAN';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .quantity-input { width: 70px; }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="container my-5">
+        <div class="page-header">
+            <h1>Keranjang Belanja Anda</h1>
+        </div>
+        <div id="cart-container">
+            <!-- Konten keranjang akan dimuat di sini oleh JavaScript -->
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- File cart.js tidak lagi diperlukan karena logikanya dipindah ke bawah -->
+    <!-- <script src="js/cart.js"></script> -->
+    <script src="js/main.js"></script>
+
+    <script>
+        // =======================================================
+        // FUNGSI INTI KERANJANG DIPINDAHKAN KE SINI UNTUK MENGATASI ERROR
+        // =======================================================
+        function getCartItems() {
+            const cart = localStorage.getItem('wienkglamCart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCartItems(cart) {
+            localStorage.setItem('wienkglamCart', JSON.stringify(cart));
+        }
+
+        function getCartCount() {
+            return getCartItems().reduce((total, item) => total + item.quantity, 0);
+        }
+        
+        function updateCartIcon() {
+            const cartCount = getCartCount();
+            const cartIconBadge = document.getElementById('cart-icon-badge');
+            if (cartIconBadge) {
+                if (cartCount > 0) {
+                    cartIconBadge.textContent = cartCount;
+                    cartIconBadge.style.display = 'inline-block';
+                } else {
+                    cartIconBadge.style.display = 'none';
+                }
+            }
+        }
+
+        // =======================================================
+        // LOGIKA UNTUK MENAMPILKAN HALAMAN KERANJANG
+        // =======================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartContainer = document.getElementById('cart-container');
+            
+            function renderCart() {
+                const cartItems = getCartItems(); // Sekarang fungsi ini sudah terdefinisi
+                cartContainer.innerHTML = '';
+
+                if (cartItems.length === 0) {
+                    cartContainer.innerHTML = `<div class="info-box text-center"><i class="fas fa-shopping-bag fa-5x text-light-pink mb-4"></i><p class="lead fw-bold mb-1">Keranjang Anda Kosong</p><p class="text-muted">Ayo jelajahi produk kami!</p><a href="products.html" class="btn btn-lg btn-pink mt-4">Jelajahi Produk</a></div>`;
+                } else {
+                    let subtotal = 0;
+                    const itemsHtml = cartItems.map(item => {
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
+                        return `<div class="list-group-item px-4 py-3"><div class="row align-items-center"><div class="col-12 col-md-5 d-flex align-items-center mb-3 mb-md-0"><img src="${item.imageUrl}" alt="${item.name}" class="cart-item-img"><div class="ms-3"><p class="fw-bold mb-0">${item.name}</p><small class="text-muted">Harga: Rp ${item.price.toLocaleString('id-ID')}</small></div></div><div class="col-6 col-md-3"><label class="form-label d-md-none">Jumlah:</label><input type="number" class="form-control quantity-input" value="${item.quantity}" min="1" onchange="updateItemQuantity('${item._id}', this.value)"></div><div class="col-4 col-md-3 text-md-end"><p class="mb-0 fw-bold">Rp ${itemTotal.toLocaleString('id-ID')}</p></div><div class="col-2 col-md-1 text-end"><button class="btn btn-sm btn-outline-danger" onclick="removeItem('${item._id}')" title="Hapus item"><i class="fas fa-trash"></i></button></div></div></div>`;
+                    }).join('');
+
+                    cartContainer.innerHTML = `
+                        <div class="row g-4">
+                            <div class="col-lg-8">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header bg-white py-3"><h5 class="mb-0">Item di Keranjang (${getCartCount()})</h5></div>
+                                    <div class="list-group list-group-flush">${itemsHtml}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card shadow-sm border-0" style="position: sticky; top: 100px;">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Ringkasan Belanja</h5>
+                                        <div class="d-flex justify-content-between"><p>Subtotal</p><p class="fw-bold">Rp ${subtotal.toLocaleString('id-ID')}</p></div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between fw-bold fs-5"><p>Total</p><p>Rp ${subtotal.toLocaleString('id-ID')}</p></div>
+                                        <a href="checkout.html" class="btn btn-pink w-100 mt-3">Lanjutkan ke Pembayaran</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            window.removeItem = (productId) => {
+                let cart = getCartItems();
+                cart = cart.filter(item => item._id !== productId);
+                saveCartItems(cart);
+                renderCart();
+                updateCartIcon();
+            };
+
+            window.updateItemQuantity = (productId, quantity) => {
+                const cart = getCartItems();
+                const itemToUpdate = cart.find(item => item._id === productId);
+                if (itemToUpdate) {
+                    itemToUpdate.quantity = parseInt(quantity, 10);
+                    if (itemToUpdate.quantity <= 0) {
+                        window.removeItem(productId);
+                    } else {
+                        saveCartItems(cart);
+                        renderCart();
+                        updateCartIcon();
+                    }
+                }
+            };
+            
+            renderCart();
+        });
+    </script>
+</body>
+</html>

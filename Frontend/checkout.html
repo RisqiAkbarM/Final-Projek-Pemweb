@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="container my-5" id="main-content">
+        <div class="page-header">
+            <h1>Checkout</h1>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-md-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3"><h4 class="mb-0">Alamat Pengiriman</h4></div>
+                    <div class="card-body p-4">
+                        <div id="notification" class="mb-3"></div>
+                        <form id="shippingForm">
+                            <div class="mb-3"><label for="address" class="form-label">Alamat Lengkap</label><input type="text" class="form-control" id="address" placeholder="Jalan, nomor rumah, RT/RW" required></div>
+                            <div class="mb-3"><label for="city" class="form-label">Kota/Kabupaten</label><input type="text" class="form-control" id="city" placeholder="Contoh: Banyumas" required></div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label for="postalCode" class="form-label">Kode Pos</label><input type="text" class="form-control" id="postalCode" placeholder="Contoh: 53181" required></div>
+                                <div class="col-md-6 mb-3"><label for="country" class="form-label">Negara</label><input type="text" class="form-control" id="country" value="Indonesia" required></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0" style="position: sticky; top: 100px;">
+                    <div class="card-header bg-white py-3"><h4 class="mb-0">Ringkasan Pesanan</h4></div>
+                    <div class="card-body" id="order-summary"></div>
+                    <div class="card-footer bg-white p-3">
+                        <button id="placeOrderBtn" class="btn btn-pink w-100 btn-lg">Buat Pesanan (COD)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- File cart.js tidak lagi wajib untuk halaman ini, tapi kita biarkan -->
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // FIX: Definisikan fungsi getCartItems langsung di sini untuk memastikan ketersediaannya.
+            function getCartItems() {
+                const cart = localStorage.getItem('wienkglamCart');
+                return cart ? JSON.parse(cart) : [];
+            }
+
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const cartItems = getCartItems();
+            const mainContent = document.getElementById('main-content');
+
+            if (!userInfo) {
+                mainContent.innerHTML = `<div class="text-center"><div class="alert alert-danger p-4"><h4 class="alert-heading">Akses Ditolak!</h4><p>Anda harus login untuk melanjutkan checkout.</p><hr><a href="login.html" class="btn btn-danger">Ke Halaman Login</a></div></div>`;
+                return;
+            }
+
+            if (cartItems.length === 0) {
+                mainContent.innerHTML = `<div class="text-center"><div class="alert alert-warning p-4"><h4 class="alert-heading">Keranjang Kosong!</h4><p>Anda tidak memiliki item di keranjang belanja.</p><hr><a href="products.html" class="btn btn-warning">Lihat Produk</a></div></div>`;
+                return;
+            }
+
+            const orderSummaryContainer = document.getElementById('order-summary');
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            const notificationDiv = document.getElementById('notification');
+
+            const addressInput = document.getElementById('address');
+            const cityInput = document.getElementById('city');
+            const postalCodeInput = document.getElementById('postalCode');
+            const countryInput = document.getElementById('country');
+
+            if (userInfo.shippingAddress) {
+                addressInput.value = userInfo.shippingAddress.address || '';
+                cityInput.value = userInfo.shippingAddress.city || '';
+                postalCodeInput.value = userInfo.shippingAddress.postalCode || '';
+                countryInput.value = userInfo.shippingAddress.country || '';
+            }
+
+            const renderOrderSummary = () => {
+                let subtotal = 0;
+                const itemsHtml = cartItems.map(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    return `<li class="list-group-item d-flex justify-content-between lh-sm"><div><h6 class="my-0">${item.name}</h6><small class="text-muted">Jumlah: ${item.quantity}</small></div><span class="text-muted">Rp ${itemTotal.toLocaleString('id-ID')}</span></li>`;
+                }).join('');
+
+                orderSummaryContainer.innerHTML = `<ul class="list-group list-group-flush">${itemsHtml}<li class="list-group-item d-flex justify-content-between"><span>Total (IDR)</span><strong>Rp ${subtotal.toLocaleString('id-ID')}</strong></li></ul>`;
+                return subtotal;
+            };
+
+            const totalPrice = renderOrderSummary();
+
+            placeOrderBtn.addEventListener('click', async () => {
+                const orderData = {
+                    orderItems: cartItems,
+                    shippingAddress: { address: addressInput.value, city: cityInput.value, postalCode: postalCodeInput.value, country: countryInput.value },
+                    paymentMethod: 'COD',
+                    totalPrice: totalPrice,
+                };
+
+                if (!orderData.shippingAddress.address || !orderData.shippingAddress.city || !orderData.shippingAddress.postalCode) {
+                    notificationDiv.innerHTML = '<div class="alert alert-danger">Harap isi semua kolom alamat pengiriman.</div>';
+                    return;
+                }
+
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.innerHTML = 'Memproses...';
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userInfo.token}` },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    const createdOrder = await response.json();
+                    if (!response.ok) throw new Error(createdOrder.message || 'Gagal membuat pesanan.');
+
+                    localStorage.removeItem('wienkglamCart');
+                    alert('Pesanan Anda telah berhasil dibuat!');
+                    window.location.href = 'order-history.html';
+
+                } catch (error) {
+                    notificationDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                    placeOrderBtn.disabled = false;
+                    placeOrderBtn.innerHTML = 'Buat Pesanan (COD)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

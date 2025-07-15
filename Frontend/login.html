@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-page">
+
+    <div class="login-box">
+        <div class="text-center mb-4">
+            <a href="index.html" class="h3 text-decoration-none text-dark" style="font-weight: 700;">WienkGlam</a>
+        </div>
+        <h4 class="text-center text-muted mb-4">Masuk ke Akun Anda</h4>
+
+        <div id="notification" class="mb-3"></div>
+
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="masukkan email" required />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Kata Sandi:</label>
+                <input type="password" class="form-control" id="password" placeholder="password" required />
+            </div>
+            <button type="submit" id="submitButton" class="btn btn-pink w-100">Login</button>
+        </form>
+        <p class="text-center mt-3">Belum punya akun? <a href="register.html">Daftar di sini</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const submitButton = document.getElementById('submitButton');
+        const notificationDiv = document.getElementById('notification');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Memproses...';
+            notificationDiv.innerHTML = '';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            let loginSuccess = false;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Terjadi kesalahan');
+                }
+
+                // Tandai bahwa login berhasil
+                loginSuccess = true;
+                
+                notificationDiv.innerHTML = `<div class="alert alert-success">Login berhasil! Selamat datang kembali.</div>`;
+                localStorage.setItem('userInfo', JSON.stringify(data));
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+
+            } catch (error) {
+                // Log error ke console untuk debugging di masa depan
+                console.error('Login Error:', error); 
+                notificationDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+            } finally {
+                // Hanya reset tombol jika login TIDAK berhasil
+                // Jika berhasil, halaman akan dialihkan jadi tidak perlu direset
+                if (!loginSuccess) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Login';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

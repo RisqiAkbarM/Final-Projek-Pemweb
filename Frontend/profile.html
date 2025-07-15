@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        
+        .profile-nav .nav-link {
+            color: #6c757d;
+            border-left: 3px solid transparent;
+            border-radius: 0;
+        }
+        .profile-nav .nav-link.active {
+            color: #d63384;
+            font-weight: bold;
+            background-color: #fce4ec;
+            border-left-color: #d63384;
+        }
+        .profile-nav .nav-link:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="container my-5" id="main-content">
+        <div class="page-header">
+            <h1>Akun Saya</h1>
+        </div>
+
+        <div class="row" id="profile-content-wrapper">
+            <!-- Kolom Navigasi Samping -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-2">
+                        <nav class="nav flex-column profile-nav">
+                            <a class="nav-link active" href="profile.html"><i class="fas fa-user-edit me-2"></i>Edit Profil</a>
+                            <a class="nav-link" href="order-history.html"><i class="fas fa-receipt me-2"></i>Riwayat Pesanan</a>
+                            
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Konten Utama -->
+            <div class="col-md-8 col-lg-9 mt-4 mt-md-0">
+            
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Informasi Pribadi</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="notification" class="mb-3"></div>
+                        <form id="profileForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Alamat Email</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                            </div>
+                            <button type="submit" id="submitButton" class="btn btn-pink">Simpan Informasi</button>
+                        </form>
+                    </div>
+                </div>
+
+                
+                <div class="card shadow-sm border-0 mt-4">
+                     <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Alamat Pengiriman</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="address-notification" class="mb-3"></div>
+                        <form id="addressForm">
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Alamat Lengkap</label>
+                                <input type="text" class="form-control" id="address" placeholder="Jalan, nomor rumah, RT/RW">
+                            </div>
+                            <div class="mb-3">
+                                <label for="city" class="form-label">Kota/Kabupaten</label>
+                                <input type="text" class="form-control" id="city">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="postalCode" class="form-label">Kode Pos</label>
+                                    <input type="text" class="form-control" id="postalCode">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="country" class="form-label">Negara</label>
+                                    <input type="text" class="form-control" id="country" value="Indonesia">
+                                </div>
+                            </div>
+                            <button type="submit" id="addressSubmitButton" class="btn btn-outline-danger">Simpan Alamat</button>
+                        </form>
+                    </div>
+                </div>
+                
+                
+                <div class="card shadow-sm border-0 mt-4">
+                     <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Ubah Password</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="password-notification" class="mb-3"></div>
+                        <form id="passwordForm">
+                            <p class="text-muted small">Kosongkan jika tidak ingin mengubah password.</p>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password Baru</label>
+                                <input type="password" class="form-control" id="password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Konfirmasi Password Baru</label>
+                                <input type="password" class="form-control" id="confirmPassword">
+                            </div>
+                            <button type="submit" id="passwordSubmitButton" class="btn btn-outline-danger">Ubah Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const mainContent = document.getElementById('main-content');
+
+            if (!userInfo) {
+                mainContent.innerHTML = `
+                    <div class="text-center">
+                        <div class="alert alert-danger p-4">
+                            <h4 class="alert-heading">Akses Ditolak!</h4>
+                            <p>Anda harus login terlebih dahulu untuk dapat mengakses halaman ini.</p>
+                            <hr>
+                            <a href="login.html" class="btn btn-danger">Ke Halaman Login</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const profileForm = document.getElementById('profileForm');
+            const submitButton = document.getElementById('submitButton');
+            const notificationDiv = document.getElementById('notification');
+            
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const passwordForm = document.getElementById('passwordForm');
+            const passwordSubmitButton = document.getElementById('passwordSubmitButton');
+            const passwordNotificationDiv = document.getElementById('password-notification');
+
+            const addressInput = document.getElementById('address');
+            const cityInput = document.getElementById('city');
+            const postalCodeInput = document.getElementById('postalCode');
+            const countryInput = document.getElementById('country');
+            const addressForm = document.getElementById('addressForm');
+            const addressSubmitButton = document.getElementById('addressSubmitButton');
+            const addressNotificationDiv = document.getElementById('address-notification');
+
+            nameInput.value = userInfo.name || '';
+            emailInput.value = userInfo.email || '';
+            if (userInfo.shippingAddress) {
+                addressInput.value = userInfo.shippingAddress.address || '';
+                cityInput.value = userInfo.shippingAddress.city || '';
+                postalCodeInput.value = userInfo.shippingAddress.postalCode || '';
+                countryInput.value = userInfo.shippingAddress.country || '';
+            }
+
+            profileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleFormSubmit({ name: nameInput.value, email: emailInput.value }, submitButton, notificationDiv, 'Simpan Informasi');
+            });
+
+            passwordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                passwordNotificationDiv.innerHTML = '';
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    passwordNotificationDiv.innerHTML = `<div class="alert alert-danger">Konfirmasi password tidak cocok!</div>`;
+                    return;
+                }
+                if (!passwordInput.value) {
+                    passwordNotificationDiv.innerHTML = `<div class="alert alert-warning">Password baru tidak boleh kosong.</div>`;
+                    return;
+                }
+                handleFormSubmit({ password: passwordInput.value }, passwordSubmitButton, passwordNotificationDiv, 'Ubah Password');
+            });
+
+            addressForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const addressData = {
+                    shippingAddress: {
+                        address: addressInput.value,
+                        city: cityInput.value,
+                        postalCode: postalCodeInput.value,
+                        country: countryInput.value,
+                    }
+                };
+                handleFormSubmit(addressData, addressSubmitButton, addressNotificationDiv, 'Simpan Alamat');
+            });
+
+            const handleFormSubmit = async (updateData, button, notificationElement, buttonText) => {
+                button.disabled = true;
+                button.innerHTML = 'Menyimpan...';
+                notificationElement.innerHTML = '';
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/users/profile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${userInfo.token}`
+                        },
+                        body: JSON.stringify(updateData)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Gagal menyimpan perubahan.');
+                    }
+
+                    localStorage.setItem('userInfo', JSON.stringify(data));
+                    notificationElement.innerHTML = `<div class="alert alert-success">Perubahan berhasil disimpan!</div>`;
+                    
+                    if (updateData.password) {
+                        passwordForm.reset();
+                    }
+                    
+                } catch (error) {
+                    notificationElement.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = buttonText;
+                }
+            };
+        });
+    </script>
+</body>
+</html>

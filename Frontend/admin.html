@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="container my-5" id="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">Admin Dashboard</h1>
+        </div>
+
+        <ul class="nav nav-tabs mb-3" id="adminTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-panel" type="button" role="tab">Manajemen Produk</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders-panel" type="button" role="tab">Manajemen Pesanan</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-panel" type="button" role="tab">Manajemen Pengguna</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="adminTabContent">
+            <!-- Panel Manajemen Produk -->
+            <div class="tab-pane fade show active" id="products-panel" role="tabpanel">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Daftar Produk</h5>
+                        <button class="btn btn-pink btn-sm" data-bs-toggle="modal" data-bs-target="#productModal">
+                            <i class="fas fa-plus"></i> Tambah Produk
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th>Harga</th>
+                                    <th class="text-end">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-product-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Manajemen Pesanan (Diperbarui) -->
+            <div class="tab-pane fade" id="orders-panel" role="tabpanel">
+                <div class="card shadow-sm">
+                     <div class="card-header"><h5 class="mb-0">Daftar Pesanan Masuk</h5></div>
+                     <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID Pesanan</th>
+                                    <th>Pelanggan</th>
+                                    <th>Tanggal</th>
+                                    <th>Total</th>
+                                    <th>Status Bayar</th>
+                                    <th>Status Kirim</th>
+                                    <th class="text-end">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-order-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Manajemen Pengguna -->
+            <div class="tab-pane fade" id="users-panel" role="tabpanel">
+                <div class="card shadow-sm">
+                     <div class="card-header bg-white py-3"><h5 class="mb-0">Daftar Pengguna Terdaftar</h5></div>
+                     <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Peran</th>
+                                    <th>Tanggal Bergabung</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-user-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal untuk Tambah/Edit Produk (Tidak ada perubahan) -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Tambah Produk Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm">
+                        <input type="hidden" id="productId">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nama Produk</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="slug" class="form-label">Slug (URL-friendly)</label>
+                            <input type="text" class="form-control" id="slug" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="description" rows="4" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label">Harga (Rp)</label>
+                                <input type="number" class="form-control" id="price" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="imageUrl" class="form-label">URL Gambar</label>
+                                <input type="text" class="form-control" id="imageUrl" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="buyUrl" class="form-label">URL Beli (Marketplace)</label>
+                            <input type="text" class="form-control" id="buyUrl" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Produk</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const mainContent = document.getElementById('main-content');
+
+            if (!userInfo || userInfo.role !== 'admin') {
+                mainContent.innerHTML = `<div class="text-center"><div class="alert alert-danger p-4"><h4 class="alert-heading">Akses Ditolak!</h4><p>Hanya admin yang dapat mengakses halaman ini.</p><hr><a href="index.html" class="btn btn-danger">Kembali ke Halaman Utama</a></div></div>`;
+                return;
+            }
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`
+            };
+
+            // === Logika Manajemen Produk (tidak berubah) ===
+            const productList = document.getElementById('admin-product-list');
+            const productModalEl = document.getElementById('productModal');
+            const productModal = new bootstrap.Modal(productModalEl);
+            const productForm = document.getElementById('productForm');
+            const modalTitle = document.getElementById('productModalLabel');
+            
+            const loadProducts = async () => { /* ... kode loadProducts Anda yang sudah ada ... */ };
+            productForm.addEventListener('submit', async (e) => { /* ... kode submit form produk Anda yang sudah ada ... */ });
+            window.editProduct = async (id) => { /* ... kode editProduct Anda yang sudah ada ... */ };
+            window.deleteProduct = async (id) => { /* ... kode deleteProduct Anda yang sudah ada ... */ };
+            productModalEl.addEventListener('hidden.bs.modal', () => { /* ... kode reset modal Anda yang sudah ada ... */ });
+            
+            // === Logika Manajemen Pesanan (Diperbarui) ===
+            const orderList = document.getElementById('admin-order-list');
+            const loadOrders = async () => {
+                try {
+                    const response = await fetch('http://localhost:5000/api/orders', { headers });
+                    if(!response.ok) throw new Error('Gagal memuat pesanan.');
+                    const orders = await response.json();
+                    
+                    orderList.innerHTML = '';
+                    if (orders.length === 0) {
+                        orderList.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Belum ada pesanan yang masuk.</td></tr>`;
+                        return;
+                    }
+                    orders.forEach(order => {
+                        const orderDate = new Date(order.createdAt).toLocaleDateString('id-ID');
+                        orderList.innerHTML += `
+                            <tr>
+                                <td><code>${order._id.substring(0, 8)}</code></td>
+                                <td>${order.user ? order.user.name : 'N/A'}</td>
+                                <td>${orderDate}</td>
+                                <td>Rp ${order.totalPrice.toLocaleString('id-ID')}</td>
+                                <td><span class="badge bg-${order.isPaid ? 'success' : 'warning'}">${order.isPaid ? 'Dibayar' : 'Belum Bayar'}</span></td>
+                                <td><span class="badge bg-${order.isDelivered ? 'primary' : 'secondary'}">${order.isDelivered ? 'Terkirim' : 'Belum Dikirim'}</span></td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a href="order-detail.html?id=${order._id}" class="btn btn-sm btn-outline-info">Detail</a>
+                                        <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            ${!order.isPaid ? `<li><a class="dropdown-item" href="#" onclick="markAsPaid('${order._id}')">Tandai Sudah Dibayar</a></li>` : ''}
+                                            ${!order.isDelivered ? `<li><a class="dropdown-item" href="#" onclick="markAsDelivered('${order._id}')">Tandai Sudah Dikirim</a></li>` : ''}
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } catch(error) {
+                    orderList.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${error.message}</td></tr>`;
+                }
+            };
+
+            // === Fungsi Baru untuk Update Status ===
+            window.markAsPaid = async (orderId) => {
+                if (confirm('Apakah Anda yakin ingin menandai pesanan ini sudah dibayar?')) {
+                    const response = await fetch(`http://localhost:5000/api/orders/${orderId}/pay`, { method: 'PUT', headers });
+                    if (response.ok) loadOrders();
+                    else alert('Gagal mengupdate status.');
+                }
+            };
+
+            window.markAsDelivered = async (orderId) => {
+                if (confirm('Apakah Anda yakin ingin menandai pesanan ini sudah dikirim?')) {
+                    const response = await fetch(`http://localhost:5000/api/orders/${orderId}/deliver`, { method: 'PUT', headers });
+                    if (response.ok) loadOrders();
+                    else alert('Gagal mengupdate status.');
+                }
+            };
+
+            // === Logika Manajemen Pengguna (tidak berubah) ===
+            const userList = document.getElementById('admin-user-list');
+            const loadUsers = async () => { /* ... kode loadUsers Anda yang sudah ada ... */ };
+
+            // Memuat data saat tab diklik
+            const ordersTab = document.getElementById('orders-tab');
+            ordersTab.addEventListener('shown.bs.tab', loadOrders);
+            const usersTab = document.getElementById('users-tab');
+            usersTab.addEventListener('shown.bs.tab', loadUsers);
+            
+            // Memuat data produk saat halaman pertama kali dibuka
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

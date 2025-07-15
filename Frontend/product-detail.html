@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* Style tambahan untuk halaman detail */
+        .product-features {
+            list-style: none;
+            padding-left: 0;
+        }
+        .product-features li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        .product-features .fa-check-circle {
+            color: #d63384; /* Warna pink khas Anda */
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="container my-5">
+        <!-- Kontainer untuk detail produk -->
+        <div id="product-detail-container">
+            <p class="text-center">Memuat detail produk...</p>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const detailContainer = document.getElementById('product-detail-container');
+            
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('id');
+
+            if (!productId) {
+                detailContainer.innerHTML = '<p class="text-center text-danger">ID Produk tidak ditemukan.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+                if (!response.ok) {
+                    throw new Error('Produk tidak ditemukan.');
+                }
+                const product = await response.json();
+
+                // Memecah deskripsi menjadi beberapa poin jika ada tanda centang
+                const descriptionPoints = product.description.split('✅').filter(point => point.trim() !== '');
+
+                let featuresHtml = '';
+                if (descriptionPoints.length > 1) {
+                    // Jika deskripsi bisa dipecah, tampilkan sebagai daftar fitur
+                    const intro = descriptionPoints.shift(); // Ambil kalimat pertama sebagai intro
+                    featuresHtml = `<p class="lead">${intro.trim()}</p>
+                                    <ul class="product-features mt-4">`;
+                    descriptionPoints.forEach(point => {
+                        featuresHtml += `<li><i class="fas fa-check-circle"></i><span>${point.trim()}</span></li>`;
+                    });
+                    featuresHtml += '</ul>';
+                } else {
+                    // Jika tidak, tampilkan seperti biasa
+                    featuresHtml = `<p class="lead">${product.description}</p>`;
+                }
+
+
+                // Tampilkan detail produk dengan layout baru
+                detailContainer.innerHTML = `
+                    <div class="row g-5">
+                        <div class="col-lg-6">
+                            <img src="${product.imageUrl}" alt="${product.name}" class="img-fluid rounded shadow-lg">
+                        </div>
+                        <div class="col-lg-6 d-flex flex-column">
+                            <h2 class="fw-bold">${product.name}</h2>
+                            
+                            <div class="product-description my-4">
+                                ${featuresHtml}
+                            </div>
+
+                          
+                            <p class="fs-4 text-danger fw-bold mt-auto mb-3">Rp ${product.price.toLocaleString('id-ID')}</p>
+                            
+                            <div class="d-grid gap-2">
+                                <button id="addToCartBtn" class="btn btn-pink btn-lg">
+                                    <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+                                </button>
+                                <a href="${product.buyUrl}" class="btn btn-outline-danger btn-lg" target="_blank">Beli Sekarang di Marketplace</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Tambahkan event listener ke tombol "Tambah ke Keranjang"
+                document.getElementById('addToCartBtn').addEventListener('click', () => {
+                    addToCart(product);
+                });
+
+            } catch (error) {
+                detailContainer.innerHTML = `<p class="text-center text-danger">${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

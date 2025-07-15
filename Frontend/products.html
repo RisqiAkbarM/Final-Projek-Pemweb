@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk Kami - Wienkglam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        .promo-carousel-item img {
+            max-height: 450px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 15px;
+        }
+        .product-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <!-- 1. BAGIAN CAROUSEL PROMO -->
+    <div class="container mt-4">
+        <div id="promoCarousel" class="carousel slide shadow-sm" data-bs-ride="carousel" style="border-radius: 15px;">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner" style="border-radius: 15px;">
+                <div class="carousel-item active promo-carousel-item">
+                    <img src="promo1.jpg" class="d-block w-100" alt="Promo 1">
+                </div>
+                <div class="carousel-item promo-carousel-item">
+                    <img src="promo2.jpg" class="d-block w-100" alt="Promo 2">
+                </div>
+                <div class="carousel-item promo-carousel-item">
+                    <img src="promo3.jpg" class="d-block w-100" alt="Promo 3">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. BAGIAN PENCARIAN & KOLEKSI PRODUK -->
+    <main class="container my-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8 col-lg-6">
+                <form class="d-flex" id="searchForm">
+                    <input class="form-control form-control-lg me-2" type="search" id="searchInput" placeholder="Cari nama lipstik..." aria-label="Search">
+                    <button class="btn btn-danger" type="submit">Cari</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="page-header" id="page-header-container">
+            {/* Judul akan diisi oleh JavaScript */}
+        </div>
+
+        <div id="product-list-container" class="row g-4">
+            <p class="text-center">Memuat produk...</p>
+        </div>
+    </main>
+    
+    <!-- 3. BAGIAN ABOUT US -->
+    <div class="container my-5 py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <img src="promo1.jpg" alt="About Wienkglam" class="img-fluid rounded shadow-lg">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="mb-3 fw-bold">ABOUT WIENKLAM</h2>
+                <p class="lead"><strong>Wienkglam</strong> lahir dari semangat untuk memperkuat kepercayaan diri dan gaya wanita Indonesia melalui kecantikan yang otentik.</p>
+                <p>Sejak awal, kami menghadirkan rangkaian lipstik yang tidak hanya memperindah tetapi juga memberdayakan setiap wanita untuk mengekspresikan dirinya. Dengan warna-warna mulai dari lembut hingga berani, setiap produk Wienkglam dirancang penuh cinta dan karakter.</p>
+                <p>Kami percaya bahwa kecantikan bukan tentang meniru orang lain, tapi merayakan siapa dirimu sebenarnya.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const productContainer = document.getElementById('product-list-container');
+            const pageHeaderContainer = document.getElementById('page-header-container');
+            const searchForm = document.getElementById('searchForm');
+            const searchInput = document.getElementById('searchInput');
+
+            const params = new URLSearchParams(window.location.search);
+            const keyword = params.get('keyword');
+
+            if (keyword) {
+                searchInput.value = keyword;
+            }
+
+            let apiUrl = 'http://localhost:5000/api/products';
+            if (keyword) {
+                apiUrl += `?keyword=${keyword}`;
+                pageHeaderContainer.innerHTML = `<h1>Hasil Pencarian untuk: "${keyword}"</h1>`;
+            } else {
+                 pageHeaderContainer.innerHTML = `<h1>Koleksi Lipstik Wienkglam</h1><p class="text-muted">Temukan warna yang paling mewakili dirimu.</p>`;
+            }
+            
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Gagal mengambil data produk.');
+                const products = await response.json();
+                productContainer.innerHTML = '';
+                if (products.length === 0) {
+                    productContainer.innerHTML = '<p class="text-center">Produk tidak ditemukan.</p>';
+                } else {
+                    products.forEach(product => {
+                        const productCard = `
+                            <div class="col-md-6 col-lg-3 d-flex align-items-stretch">
+                                <div class="card h-100 w-100 product-card">
+                                    <img src="${product.imageUrl}" class="card-img-top" alt="${product.name}" style="aspect-ratio: 1 / 1; object-fit: cover;">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">${product.name}</h5>
+                                        <p class="card-text text-muted small">${product.description.substring(0, 50)}...</p>
+                                        <p class="card-text fw-bold fs-5 mt-auto">Rp ${product.price.toLocaleString('id-ID')}</p>
+                                        <div class="mt-2">
+                                            <a href="product-detail.html?id=${product._id}" class="btn btn-outline-danger w-100">Lihat Detail</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        productContainer.innerHTML += productCard;
+                    });
+                }
+            } catch (error) {
+                productContainer.innerHTML = `<p class="text-center text-danger">${error.message}</p>`;
+            }
+
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newKeyword = searchInput.value.trim();
+                if (newKeyword) {
+                    window.location.href = `products.html?keyword=${newKeyword}`;
+                } else {
+                    window.location.href = 'products.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
